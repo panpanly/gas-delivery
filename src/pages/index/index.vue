@@ -1,8 +1,9 @@
 <template>
   <view class="content">
-    <image class="logo" src="/static/logo.png"></image>
-    <view class="text-area">
-      <text class="title">{{ title }}</text>
+    <image class="home-bg" mode="scaleToFill" src="/static/gas-home-bg.png"></image>
+    <view class="handle-body">
+      <view class="handle-btn handle-delivery" @tap="onDelevery">煤气配送</view>
+      <view class="handle-btn handle-record" @tap="onDelevery">申请记录</view>
     </view>
   </view>
 </template>
@@ -15,34 +16,54 @@ export default {
     }
   },
   onLoad() {},
-  methods: {},
+  methods: {
+
+    /**
+     * 煤气配送
+     */
+    onDelevery(){
+      //点击跳转提交配送请求页面
+      uni.navigateTo({
+        url: '/pages/deliveryApply/index'
+      });
+    },
+  },
 }
 </script>
 
-<style>
+<style lang="scss" scoped>
 .content {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  position: relative;
 }
 
-.logo {
-  height: 200rpx;
-  width: 200rpx;
-  margin-top: 200rpx;
-  margin-left: auto;
-  margin-right: auto;
-  margin-bottom: 50rpx;
+.home-bg {
+  width: 750rpx;
+  height: 100vh;
 }
 
-.text-area {
-  display: flex;
-  justify-content: center;
+.handle-body{
+  position: absolute;
+  bottom: 120rpx;
+  .handle-btn{
+    display: flex;
+    margin: 0rpx 60rpx;
+    width: 510rpx;
+    height: 120rpx;
+    justify-content: center;
+    align-items: center;
+    background: $uni-color-warning;
+    border-radius: 120rpx;
+    font-size: 42rpx;
+    color: #fff;
+  }
+  .handle-record{
+    margin-top: 40rpx;
+    background: $uni-color-success;
+  }
 }
 
-.title {
-  font-size: 36rpx;
-  color: #8f8f94;
-}
 </style>

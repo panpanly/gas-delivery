@@ -1,0 +1,5 @@
+# 忽略依赖文件夹（Node.js 项目）
+node_modules/
+# 忽略构建产物（前端项目）
+dist/
+build/

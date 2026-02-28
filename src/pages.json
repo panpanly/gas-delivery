@@ -1,15 +1,27 @@
 {
-	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
+	"pages": [
 		{
-			"path": "pages/index/index",
-			"style": {
-				"navigationBarTitleText": "uni-app"
-			}
+			"path": "pages/index/index"
+		},
+    {
+			"path": "pages/mine/index"
+		},
+    {
+			"path": "pages/deliveryApply/index"
 		}
 	],
+  // "tabBar": {
+  //   "list": [{
+  //     "pagePath": "pages/index/index",
+  //     "text": "首页"
+  //   }, {
+  //     "pagePath": "pages/mine/index",
+  //     "text": "我的"
+  //   }]
+  // },
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
-		"navigationBarTitleText": "uni-app",
+		"navigationBarTitleText": "便民配送小助手",
 		"navigationBarBackgroundColor": "#F8F8F8",
 		"backgroundColor": "#F8F8F8"
 	}
