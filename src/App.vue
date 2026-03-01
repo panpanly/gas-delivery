@@ -1,7 +1,22 @@
 <script>
 export default {
+  data() {
+    return {
+      globalData:{} //全局变量
+    }
+  },
   onLaunch: function () {
     console.log('App Launch')
+    // 检测是否支持云开发
+    if (!wx.cloud) {
+      console.error('请使用 2.2.3 或以上版本的基础库以使用云能力');
+    } else {
+      // 初始化云开发
+      wx.cloud.init({
+        env: import.meta.env.VITE_CLOUD_ID,
+        traceUser: true, // 跟踪用户行为，便于调试
+      });
+    }
   },
   onShow: function () {
     console.log('App Show')

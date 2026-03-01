@@ -33,6 +33,9 @@
 </template>
 
 <script>
+import apis from '@/pages/apis/index.js'
+// 引入文件系统模块（微信小程序端）
+const fs = uni ? uni.getFileSystemManager() : null
 export default {
   data() {
     return {
@@ -114,6 +117,8 @@ export default {
             path: savedPath,
           });
           console.log('语音保存成功，路径：', savedPath);
+          //保存到云存储
+          this.uploadVoiceToServer(savedPath);
         },
         fail: (err) => {
           this.tipText = `保存失败：${err.errMsg}`;
@@ -165,29 +170,17 @@ export default {
     },
 
     // 点击提交申请时上传到服务器
-    uploadVoiceToServer(voiceRes) {
-      uni.uploadFile({
-        url: 'https://你的服务器接口地址/uploadVoice', // 替换为实际接口
-        filePath: voiceRes.tempFilePath,
-        name: 'voiceFile', // 后端接收文件的字段名
-        header: {
-          // 根据后端要求设置请求头，如token
-          // 'Authorization': 'Bearer ' + uni.getStorageSync('token')
-        },
-        success: (uploadRes) => {
-          const data = JSON.parse(uploadRes.data);
-          if (data.code === 200) {
-            this.tipText = '语音已上传到服务器';
-            console.log('上传成功，服务器返回：', data);
-          } else {
-            this.tipText = `上传失败：${data.msg}`;
-          }
-        },
-        fail: (err) => {
-          this.tipText = `上传失败：${err.errMsg}`;
-          console.error('上传错误：', err);
-        }
-      });
+    async uploadVoiceToServer(voiceRes) {
+      // 自定义云存储路径：audio/用户openid/时间戳_随机数.后缀
+      const cloudPath = `audio/${wx.cloud.getWXContext().OPENID}/${Date.now()}_${Math.random().toString(36).substr(2, 9)}.${file.name.split('.').pop()}`
+      console.error('====>>>>cloudPath',cloudPath);
+         
+      const uploadRes = await apis.updateAudioFile({
+        cloudPath,
+        fileContent: fs.readFileSync(voiceRes)
+      })
+      console.error('======>>>>>uploadRes',uploadRes);
+      
     }
   },
 }
