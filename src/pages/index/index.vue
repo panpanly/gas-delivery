@@ -1,9 +1,9 @@
 <template>
   <view class="content">
-    <image class="home-bg" mode="scaleToFill" src="/static/gas-home-bg.png"></image>
+    <image class="home-bg" mode="scaleToFill" src="/static/images/gas-home-bg.png"></image>
     <view class="handle-body">
       <view class="handle-btn handle-delivery" @tap="onDelevery">煤气配送</view>
-      <view class="handle-btn handle-record" @tap="onDelevery">申请记录</view>
+      <view class="handle-btn handle-record" @tap="onApplyRecoed">申请记录</view>
     </view>
   </view>
 </template>
@@ -25,6 +25,13 @@ export default {
       //点击跳转提交配送请求页面
       uni.navigateTo({
         url: '/pages/deliveryApply/index'
+      });
+    },
+
+    /** 申请记录 */
+    onApplyRecoed(){
+      uni.navigateTo({
+        url: '/pages/mine/index'
       });
     },
   },

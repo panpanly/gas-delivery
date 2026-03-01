@@ -10,19 +10,10 @@
 			"path": "pages/deliveryApply/index"
 		}
 	],
-  // "tabBar": {
-  //   "list": [{
-  //     "pagePath": "pages/index/index",
-  //     "text": "首页"
-  //   }, {
-  //     "pagePath": "pages/mine/index",
-  //     "text": "我的"
-  //   }]
-  // },
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
 		"navigationBarTitleText": "便民配送小助手",
-		"navigationBarBackgroundColor": "#F8F8F8",
+		"navigationBarBackgroundColor": "#fff",
 		"backgroundColor": "#F8F8F8"
 	}
 }

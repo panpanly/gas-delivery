@@ -13,5 +13,10 @@ export default {
 </script>
 
 <style>
-/*每个页面公共css */
+/* 引入本地 iconfont 样式 */
+@import "./static/iconfont/iconfont.css";
+/** 全局样式 */
+page {
+  background-color: #f5f5f5;
+}
 </style>
