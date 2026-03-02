@@ -7,10 +7,10 @@
  * @param {Boolean} [options.showLoading=true] - 是否显示加载提示（可选，默认true）
  * @returns {Promise<Object>} 统一格式的返回结果
  */
-export const uploadFileFunction = async ({
-  cloudPath,
-  fileContent,
-  loadingText = '上传中，请稍后...',
+export const callCloudFunction = async ({
+  name,
+  data = {},
+  loadingText = '处理中...',
   showLoading = true
 }) => {
   // 1. 参数校验
@@ -34,29 +34,27 @@ export const uploadFileFunction = async ({
 
     // 3. 调用云函数（仅在微信小程序端执行）
     // #ifdef MP-WEIXIN
-    const result = await wx.cloud.uploadFile({
-      cloudPath: cloudPath,
-      fileContent: fileContent
+    const result = await wx.cloud.callFunction({
+      name: name,
+      data: data
     });
-
     // 4. 关闭加载提示
     if (showLoading) {
       uni.hideLoading();
     }
-
     // 5. 处理云函数返回结果
     const res = result.result || {};
-    // 云函数业务成功（约定code=200为成功）
-    if (res.code === 200) {
+    // 云函数业务成功（约定code=1为成功）
+    if (res.code === 1) {
       return {
         success: true,
         code: res.code,
-        msg: res.msg || '操作成功',
+        msg: '操作成功',
         data: res.data || null
       };
     } else {
       // 云函数业务失败（如参数错误、数据库报错等）
-      const errorMsg = res.msg || `调用${name}失败，请稍后重试`;
+      const errorMsg = `调用${name}失败，请稍后重试`;
       // 自动提示错误信息（可根据需求关闭）
       uni.showToast({
         title: errorMsg,
@@ -65,7 +63,7 @@ export const uploadFileFunction = async ({
       });
       return {
         success: false,
-        code: res.code || -2,
+        code: -2,
         msg: errorMsg,
         data: null
       };

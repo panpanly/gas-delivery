@@ -20,7 +20,7 @@ export default defineConfig({
       // 复制的源文件/目录
       targets: [
         {
-          src: path.resolve(__dirname, 'src/cloudfunctions/**/*'), // 匹配cloudfunctions下所有文件
+          src: path.resolve(__dirname, 'cloudfunctions/**/*'), // 匹配cloudfunctions下所有文件
           dest: targetPath, // 目标目录
         },
       ],

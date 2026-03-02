@@ -1,4 +1,5 @@
 <script>
+import apis from '@/apis/index.js'
 export default {
   data() {
     return {
@@ -16,6 +17,7 @@ export default {
         env: import.meta.env.VITE_CLOUD_ID,
         traceUser: true, // 跟踪用户行为，便于调试
       });
+      this.initUserInfo();
     }
   },
   onShow: function () {
@@ -23,6 +25,18 @@ export default {
   },
   onHide: function () {
     console.log('App Hide')
+  },
+  methods:{
+    //初始化用户信息
+    async initUserInfo(){
+      const res = await apis.getUserInfoApi();
+      if(res.code === 1){
+        const {openid} = res.data || {}
+        this.globalData.openid = openid
+      }else {
+        this.globalData.openid = ''
+      }
+    }
   },
 }
 </script>

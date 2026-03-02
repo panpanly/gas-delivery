@@ -1,6 +1,10 @@
 <template>
   <view class="content">
-    <image class="home-bg" mode="scaleToFill" src="/static/images/gas-home-bg.png"></image>
+    <image 
+      class="home-bg"
+      :src="imageUrl"
+      mode="scaleToFill"
+    />
     <view class="handle-body">
       <view class="handle-btn handle-delivery" @tap="onDelevery">煤气配送</view>
       <view class="handle-btn handle-record" @tap="onApplyRecoed">申请记录</view>
@@ -9,13 +13,18 @@
 </template>
 
 <script>
+import {getCloudFileUrl} from '@/utils/cloud.js'
 export default {
   data() {
     return {
-      title: 'Hello',
+      imageUrl:'',
     }
   },
-  onLoad() {},
+  onLoad() {
+    getCloudFileUrl('cloud://cloud1-4g8i7f3ofd6fe36d.636c-cloud1-4g8i7f3ofd6fe36d-1407373655/images/gas-home-bg.png').then(url => {
+      this.imageUrl = url;
+    });
+  },
   methods: {
 
     /**

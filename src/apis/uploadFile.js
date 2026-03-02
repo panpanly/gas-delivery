@@ -7,10 +7,10 @@
  * @param {Boolean} [options.showLoading=true] - 是否显示加载提示（可选，默认true）
  * @returns {Promise<Object>} 统一格式的返回结果
  */
-export const callCloudFunction = async ({
-  name,
-  data = {},
-  loadingText = '处理中...',
+export const uploadFileFunction = async ({
+  cloudPath,
+  fileContent,
+  loadingText = '上传中，请稍后...',
   showLoading = true
 }) => {
   // 1. 参数校验
@@ -34,11 +34,11 @@ export const callCloudFunction = async ({
 
     // 3. 调用云函数（仅在微信小程序端执行）
     // #ifdef MP-WEIXIN
-    const result = await wx.cloud.callFunction({
-      name: name,
-      data: data
+    const result = await wx.cloud.uploadFile({
+      cloudPath: cloudPath,
+      fileContent: fileContent
     });
-
+    debugger
     // 4. 关闭加载提示
     if (showLoading) {
       uni.hideLoading();
@@ -47,7 +47,7 @@ export const callCloudFunction = async ({
     // 5. 处理云函数返回结果
     const res = result.result || {};
     // 云函数业务成功（约定code=200为成功）
-    if (res.code === 200) {
+    if (result.errMsg === 'cloud.callFunction:ok') {
       return {
         success: true,
         code: res.code,

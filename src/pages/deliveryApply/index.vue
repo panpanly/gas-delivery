@@ -33,7 +33,7 @@
 </template>
 
 <script>
-import apis from '@/pages/apis/index.js'
+import apis from '@/apis/index.js'
 // 引入文件系统模块（微信小程序端）
 const fs = uni ? uni.getFileSystemManager() : null
 export default {
