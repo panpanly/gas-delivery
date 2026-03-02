@@ -1,33 +1,39 @@
 <template>
   <view class="content">
-    <view class="chat-box">
-      <view class="voice-list" v-if="savedVoiceList.length">
-        <view 
-          class="voice-item" 
-          v-for="(item, index) in savedVoiceList" 
-          :key="index"
-        >
-          <view class="user-item">
-            <image class="icon-user" src="/static/images/icon-men.png" />
-          </view>
-          <view class="voice-box" @tap="playVoice(item.path)">
-            <icon class="iconfont icon-yuyin"></icon>
-            <view class="voice-name">录音_{{index+1}}.mp3</view>
-          </view>
+  <view class="chat-box">
+    <view class="voice-list" v-if="savedVoiceList.length">
+      <view 
+        class="voice-item" 
+        v-for="(item, index) in savedVoiceList" 
+        :key="index"
+      >
+        <view class="user-item">
+          <image class="icon-user" src="/static/images/icon-men.png" />
+        </view>
+        <view class="voice-box" @tap="playVoice(item.path)">
+          <icon class="iconfont icon-yuyin"></icon>
+          <view class="voice-name">录音_{{index+1}}.mp3</view>
         </view>
       </view>
-      <view v-else-if="tipText" class="record-text">{{tipText}}</view>
-      <view 
-        v-if="!isRecording"
-        class="record-btn start-btn" 
-        @tap="startRecord">开始录音</view>
-      <view
-        v-else
-        class="record-btn end-btn" 
-        @tap="stopRecord">停止录音</view>
+    </view>
+    <view v-else-if="tipText" class="record-text">{{tipText}}</view>
+    <view 
+      v-if="!isRecording"
+      class="record-btn start-btn" 
+      @tap="startRecord">开始录音</view>
+    <view
+      v-else
+      class="record-btn end-btn" 
+      @tap="stopRecord">停止录音</view>
+    </view>
+    <view class="cell-box">
+      <view class="cell-title">手机号*：</view>
+      <view class="cell-content">
+        <input class="cell-input" :placeholder-style="customPlaceholderStyle" type="number" :value="telphone" placeholder="请输入手机号" />
       </view>
+    </view>
     <view class="handle-box">
-      <view class="handle-apply">提交申请</view>
+      <view class="handle-apply" @tap="handleSubmit">提交申请</view>
     </view>
   </view>
 </template>
@@ -36,13 +42,16 @@
 import apis from '@/apis/index.js'
 // 引入文件系统模块（微信小程序端）
 const fs = uni ? uni.getFileSystemManager() : null
+const app = getApp();
 export default {
   data() {
     return {
       recorderManager: null, // 录音管理器实例
       isRecording: false, // 是否正在录音
       tipText: '', // 提示文本
-      savedVoiceList: [] // 已保存的语音列表
+      savedVoiceList: [], // 已保存的语音列表
+      telphone:'',
+      customPlaceholderStyle:'font-size:36rpx;'
     }
   },
   onLoad() {
@@ -62,14 +71,12 @@ export default {
       this.recorderManager.onError((err) => {
         this.isRecording = false;
         this.tipText = `录音失败：${err.errMsg}`;
-        console.error('录音错误：', err);
       });
       
       // 录音停止回调（获取录音文件）
       this.recorderManager.onStop((res) => {
         this.isRecording = false;
         this.tipText = '录音完成，正在保存...';
-        console.log('录音文件信息：', res);
         
         // 保存录音到本地
         this.saveVoiceToLocal(res);
@@ -112,17 +119,11 @@ export default {
         success: (saveRes) => {
           const savedPath = saveRes.savedFilePath;
           this.tipText = '语音已保存到本地';
-          // 将保存的语音添加到列表
-          this.savedVoiceList.push({
-            path: savedPath,
-          });
-          console.log('语音保存成功，路径：', savedPath);
           //保存到云存储
           this.uploadVoiceToServer(savedPath);
         },
         fail: (err) => {
           this.tipText = `保存失败：${err.errMsg}`;
-          console.error('语音保存失败：', err);
         }
       });
     },
@@ -172,16 +173,49 @@ export default {
     // 点击提交申请时上传到服务器
     async uploadVoiceToServer(voiceRes) {
       // 自定义云存储路径：audio/用户openid/时间戳_随机数.后缀
-      const cloudPath = `audio/${wx.cloud.getWXContext().OPENID}/${Date.now()}_${Math.random().toString(36).substr(2, 9)}.${file.name.split('.').pop()}`
-      console.error('====>>>>cloudPath',cloudPath);
+      const cloudPath = `audio/${app.globalData.openid}/${Date.now()}_${Math.random().toString(36).substr(2, 9)}.${voiceRes.split('.').pop()}`
          
-      const uploadRes = await apis.updateAudioFile({
+      const uploadRes = await apis.updateAudioFileApi({
         cloudPath,
-        fileContent: fs.readFileSync(voiceRes)
+        filePath: voiceRes
       })
-      console.error('======>>>>>uploadRes',uploadRes);
+      if(uploadRes.code === 1){
+        const {fileID} = uploadRes.data || {}
+        // 将保存的语音添加到列表
+        this.savedVoiceList.push({
+          path: voiceRes,
+          fileID:fileID
+        });
+      }
       
-    }
+    },
+
+    /**
+     * 数据校验
+     */
+    dataValidate(){
+      const {savedVoiceList,telphone} = this ;
+      if(!savedVoiceList.length){
+        this.$toast('请先录音！')
+        return false
+      }
+      if(!telphone){
+        this.customPlaceholderStyle = 'font-size:36rpx;color:#dd524d'
+        this.$toast('请先填写手机号！')
+        return false
+      }
+    },
+
+    /**
+     * 提交申请
+     */
+    handleSubmit(){
+      //1 数据校验
+      const isvalidateResult = this.dataValidate();
+      if(!isvalidateResult) return 
+      //2 获取入参
+      //3 提交请求
+    },
   },
 }
 </script>
@@ -195,7 +229,7 @@ export default {
   .chat-box{
     margin: 0rpx 36rpx;
     width: 678rpx;
-    height: 80%;
+    height: 70%;
     border: 2rpx solid $uni-color-success;
     border-radius: 50rpx;
     position: relative;
@@ -264,8 +298,29 @@ export default {
       background:$uni-color-warning
     }
   }
-
+  .cell-box{
+    display: flex;
+    align-items: center;
+    padding: 30rpx 24rpx;
+    margin-top: 40rpx;
+    .cell-title{
+      font-size: 36rpx;
+      color: #000;
+    }
+    .cell-content{
+      width:75%;
+      height: 100rpx;
+      border: 2rpx solid $uni-color-success;
+      border-radius: 100rpx;
+      .cell-input{
+        height: 80rpx;
+        line-height: 80rpx;
+        padding: 10rpx 20rpx 10rpx 50rpx;
+      }
+    }
+  }
   .handle-box{
+    margin-top: 40rpx;
     .handle-apply{
       margin: 0rpx 36rpx;
       width: 678rpx;
@@ -277,7 +332,6 @@ export default {
       color: #fff;
       font-size: 42rpx;
       border-radius: 120rpx;
-      margin-top: 60rpx;
     }
   }
 }

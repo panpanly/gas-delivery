@@ -1,11 +1,9 @@
 <script>
 import apis from '@/apis/index.js'
 export default {
-  data() {
-    return {
-      globalData:{} //全局变量
-    }
-  },
+  globalData:{
+    openid:''
+  }, //全局变量
   onLaunch: function () {
     console.log('App Launch')
     // 检测是否支持云开发

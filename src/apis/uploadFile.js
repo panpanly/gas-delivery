@@ -9,12 +9,12 @@
  */
 export const uploadFileFunction = async ({
   cloudPath,
-  fileContent,
+  filePath,
   loadingText = '上传中，请稍后...',
   showLoading = true
 }) => {
   // 1. 参数校验
-  if (!name || typeof name !== 'string') {
+  if (!cloudPath || typeof cloudPath !== 'string') {
     return {
       success: false,
       code: -1,
@@ -36,27 +36,29 @@ export const uploadFileFunction = async ({
     // #ifdef MP-WEIXIN
     const result = await wx.cloud.uploadFile({
       cloudPath: cloudPath,
-      fileContent: fileContent
+      filePath: filePath
     });
-    debugger
+
     // 4. 关闭加载提示
     if (showLoading) {
       uni.hideLoading();
     }
 
     // 5. 处理云函数返回结果
-    const res = result.result || {};
-    // 云函数业务成功（约定code=200为成功）
-    if (result.errMsg === 'cloud.callFunction:ok') {
+    // 云函数业务成功（约定code=1为成功）
+    if (result.errMsg === 'cloud.uploadFile:ok') {
+      const fileID = result.fileID || {};
       return {
         success: true,
-        code: res.code,
-        msg: res.msg || '操作成功',
-        data: res.data || null
+        code: 1,
+        msg: '操作成功',
+        data:{
+          fileID:fileID
+        }
       };
     } else {
       // 云函数业务失败（如参数错误、数据库报错等）
-      const errorMsg = res.msg || `调用${name}失败，请稍后重试`;
+      const errorMsg = `调用接口失败，请稍后重试`;
       // 自动提示错误信息（可根据需求关闭）
       uni.showToast({
         title: errorMsg,
@@ -65,7 +67,7 @@ export const uploadFileFunction = async ({
       });
       return {
         success: false,
-        code: res.code || -2,
+        code: -2,
         msg: errorMsg,
         data: null
       };

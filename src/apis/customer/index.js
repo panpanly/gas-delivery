@@ -1,5 +1,4 @@
 import {callCloudFunction} from '../callCloudFetch.js'
-import {uploadFileFunction} from '../uploadFile.js'
 
 /**
  * 提交录音记录的快捷调用
@@ -27,20 +26,7 @@ const getUserAudioRecords = (data) => {
   });
 };
 
-/**
- * 录音文件上传
- * @param {*} data 
- * @returns 
- */
-const updateAudioFile = (data) =>{
-  return uploadFileFunction({
-    cloudPath:data.cloudPath,
-    fileContent:data.fileContent
-  })
-}
-
 export default {
   submitAudioRecords,
   getUserAudioRecords,
-  updateAudioFile
 }
