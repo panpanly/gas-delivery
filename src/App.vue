@@ -2,7 +2,10 @@
 import apis from '@/apis/index.js'
 export default {
   globalData:{
-    openid:''
+    userInfo:{
+      openid:'',
+      phone:'',
+    },
   }, //全局变量
   onLaunch: function () {
     console.log('App Launch')
@@ -29,10 +32,11 @@ export default {
     async initUserInfo(){
       const res = await apis.getUserInfoApi();
       if(res.code === 1){
-        const {openid} = res.data || {}
-        this.globalData.openid = openid
+        const {openid,phone} = res.data || {}
+        this.globalData.userInfo.openid = openid
+        this.globalData.userInfo.phone = phone
       }else {
-        this.globalData.openid = ''
+        this.globalData.userInfo = {}
       }
     }
   },
@@ -43,6 +47,7 @@ export default {
 /* 引入本地 iconfont 样式 */
 @import "./static/iconfont/iconfont.css";
 /** 全局样式 */
+@import "./static/base.css";
 page {
   background-color: #f5f5f5;
 }

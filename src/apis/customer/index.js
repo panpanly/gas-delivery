@@ -22,11 +22,18 @@ const getUserAudioRecords = (data) => {
   return callCloudFunction({
     name: 'getUserAudioRecords',
     data,
-    loadingText: '加载记录中...'
   });
 };
+
+const updateUserInfoApi = (data) =>{
+  return callCloudFunction({
+    name: 'updateUserInfo',
+    data,
+  });
+}
 
 export default {
   submitAudioRecords,
   getUserAudioRecords,
+  updateUserInfoApi
 }

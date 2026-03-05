@@ -26,12 +26,6 @@
       class="record-btn end-btn" 
       @tap="stopRecord">停止录音</view>
     </view>
-    <view class="cell-box">
-      <view class="cell-title">手机号*：</view>
-      <view class="cell-content">
-        <input class="cell-input" :placeholder-style="customPlaceholderStyle" type="number" :value="telphone" placeholder="请输入手机号" />
-      </view>
-    </view>
     <view class="handle-box">
       <view class="handle-apply" @tap="handleSubmit">提交申请</view>
     </view>
@@ -40,8 +34,6 @@
 
 <script>
 import apis from '@/apis/index.js'
-// 引入文件系统模块（微信小程序端）
-const fs = uni ? uni.getFileSystemManager() : null
 const app = getApp();
 export default {
   data() {
@@ -229,7 +221,7 @@ export default {
   .chat-box{
     margin: 0rpx 36rpx;
     width: 678rpx;
-    height: 70%;
+    height: 80%;
     border: 2rpx solid $uni-color-success;
     border-radius: 50rpx;
     position: relative;

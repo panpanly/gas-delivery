@@ -9,45 +9,97 @@
       <view class="handle-btn handle-delivery" @tap="onDelevery">煤气配送</view>
       <view class="handle-btn handle-record" @tap="onApplyRecoed">申请记录</view>
     </view>
+    <!-- 手机输入弹窗 -->
+    <uni-popup ref="phonePopupRef" :is-mask-click="false">
+      <telphoneInputPopup
+        @closePopup="handleClose"
+        @submit="handleSubmit"
+       />
+    </uni-popup>
   </view>
 </template>
 
-<script>
-import {getCloudFileUrl} from '@/utils/cloud.js'
-export default {
-  data() {
-    return {
-      imageUrl:'',
-    }
-  },
-  onLoad() {
+<script setup>
+  import {getCloudFileUrl} from '@/utils/cloud.js'
+  import telphoneInputPopup from '@/pages/wxcomponents/telphone-input-popup'
+  import {onMounted, reactive, ref, getCurrentInstance} from 'vue'
+
+  const instance = getCurrentInstance()
+  const app = getApp();
+  const {phone} = app?.globalData?.userInfo || {}
+  const imageUrl = ref('');
+  const state= reactive({})
+
+  let toPath = '' ;
+
+  /** 更新首页背景图 */
+  const updateImageUrl = () =>{
     getCloudFileUrl('cloud://cloud1-4g8i7f3ofd6fe36d.636c-cloud1-4g8i7f3ofd6fe36d-1407373655/images/gas-home-bg.png').then(url => {
-      this.imageUrl = url;
+      imageUrl.value = url;
     });
-  },
-  methods: {
+  }
 
-    /**
-     * 煤气配送
-     */
-    onDelevery(){
-      //点击跳转提交配送请求页面
-      uni.navigateTo({
-        url: '/pages/deliveryApply/index'
-      });
-    },
 
-    /** 申请记录 */
-    onApplyRecoed(){
-      uni.navigateTo({
-        url: '/pages/mine/index'
-      });
-    },
-  },
-}
+  /** 点击煤气配送按钮 */
+  const onDelevery = () =>{
+    toPath = '/pages/deliveryApply/index'
+    //校验用户是否填写了手机号
+    if(!phone) {
+      instance.refs.phonePopupRef.open('center')
+      return 
+    }
+    //点击跳转提交配送请求页面
+    _navigateTo(toPath)
+  }
+
+  //查看历史的申请记录
+  const onApplyRecoed = () =>{
+    toPath = '/pages/mine/index'
+    //校验用户是否填写了手机号
+    if(!phone) {
+      instance.refs.phonePopupRef.open('center')
+      return 
+    }
+    _navigateTo(toPath)
+  }
+
+  const _navigateTo = (toPath) =>{
+    uni.navigateTo({
+      url: toPath
+    });
+  }
+
+  /** 关闭手机输入的弹窗 */
+  const handleClose = () =>{
+    instance.refs.phonePopupRef.close()
+  }
+
+  const handleSubmit = () =>{
+    _navigateTo(toPath)
+  }
+
+  onMounted(() =>{
+    //获取首页背景图
+    updateImageUrl();    
+  })
 </script>
 
 <style lang="scss" scoped>
+::v-deep .uni-forms-item__label{
+  font-size: 36rpx !important;
+  height: 90rpx;
+}
+::v-deep .uni-forms-item__content{
+  display: flex;
+  align-items: center;
+  font-size: 36rpx;
+}
+::v-deep .is-input-border{
+  padding: 20rpx 0rpx;
+} 
+::v-deep .uni-easyinput__content-input{
+  font-size: 36rpx;
+}
 .content {
   display: flex;
   flex-direction: column;

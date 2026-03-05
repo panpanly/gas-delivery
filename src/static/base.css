@@ -1,0 +1,19 @@
+
+/* flex布局样式 */
+.flex-row-center{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.flex-row-between-center{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.flex-row-end-center{
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
