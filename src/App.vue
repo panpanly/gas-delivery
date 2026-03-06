@@ -1,12 +1,8 @@
 <script>
 import apis from '@/apis/index.js'
+import {useUserStore} from '@/stores/user/index.js'
 export default {
-  globalData:{
-    userInfo:{
-      openid:'',
-      phone:'',
-    },
-  }, //全局变量
+  globalData:{}, //全局变量
   onLaunch: function () {
     console.log('App Launch')
     // 检测是否支持云开发
@@ -30,13 +26,17 @@ export default {
   methods:{
     //初始化用户信息
     async initUserInfo(){
+      const userStore = useUserStore()
       const res = await apis.getUserInfoApi();
       if(res.code === 1){
         const {openid,phone} = res.data || {}
-        this.globalData.userInfo.openid = openid
-        this.globalData.userInfo.phone = phone
+        userStore.updateUserInfo({
+          openid,phone
+        })
       }else {
-        this.globalData.userInfo = {}
+        userStore.updateUserInfo({
+          openid:'',phone:''
+        })
       }
     }
   },

@@ -21,8 +21,13 @@
 
 <script setup>
   import {getCloudFileUrl} from '@/utils/cloud.js'
-  import telphoneInputPopup from '@/pages/wxcomponents/telphone-input-popup'
+  import telphoneInputPopup from '@/wxcomponents/telphone-input-popup'
   import {onMounted, reactive, ref, getCurrentInstance} from 'vue'
+  import { storeToRefs } from 'pinia'
+  import {useUserStore} from '@/stores/user/index.js'
+
+  const userStore = useUserStore();
+  const { userPhone } = storeToRefs(userStore)
 
   const instance = getCurrentInstance()
   const app = getApp();
@@ -44,7 +49,7 @@
   const onDelevery = () =>{
     toPath = '/pages/deliveryApply/index'
     //校验用户是否填写了手机号
-    if(!phone) {
+    if(!userPhone) {
       instance.refs.phonePopupRef.open('center')
       return 
     }
@@ -56,7 +61,7 @@
   const onApplyRecoed = () =>{
     toPath = '/pages/mine/index'
     //校验用户是否填写了手机号
-    if(!phone) {
+    if(!userPhone) {
       instance.refs.phonePopupRef.open('center')
       return 
     }

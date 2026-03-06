@@ -16,7 +16,9 @@
 <script setup>
   import {onMounted, reactive, toRefs, getCurrentInstance} from 'vue'
   import apis from '@/apis/index.js'
+  import {useUserStore} from '@/stores/user/index.js'
 
+  const userStore = useUserStore();
   const app = getApp();
   const instance = getCurrentInstance()
   const $emit = defineEmits(['closePopup','submit'])
@@ -60,7 +62,7 @@
     const {phone} = state.valiFormData || {}
     const res = await apis.updateUserInfoApi({phone});
     if(res.code === 1){
-      app.globalData.userInfo.phone = res?.data?.phone || ''
+      userStore.updateUserPhone(phone)
       $emit('submit',{...res.data})
     }
   }
