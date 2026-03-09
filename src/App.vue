@@ -29,9 +29,10 @@ export default {
       const userStore = useUserStore()
       const res = await apis.getUserInfoApi();
       if(res.code === 1){
-        const {openid,phone} = res.data || {}
+        const {openid, phone, id} = res.data || {}
+        userStore.updateOpenid(openid)
         userStore.updateUserInfo({
-          openid,phone
+          phone,id
         })
       }else {
         userStore.updateUserInfo({

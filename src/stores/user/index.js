@@ -3,9 +3,9 @@ import {defineStore} from 'pinia'
 export const useUserStore = defineStore('user',{
   /**状态管理 */
   state:() =>({
-    openid:'',
-    userPhone:'',
-    userName:'',
+    openid:'', //用户openid
+    userPhone:'', // 用户手机号
+    userId:'', //用户Id
   }),
 
   /** 计算属性，状态的延伸，多用于多个字段有逻辑判断的处理，可传参 */
@@ -17,8 +17,8 @@ export const useUserStore = defineStore('user',{
   actions:{
     /** 更新用户手机号 */
     updateUserInfo(userData){
-      this.openid = userData.openid
       this.userPhone = userData.phone
+      this.userId = userData.id
     },
 
     /**更新用户手机号 */

@@ -59,10 +59,10 @@
 
   /** 更新用户信息 */
   const updateUserInfo = async () =>{
-    const {phone} = state.valiFormData || {}
+    const {phone, id} = state.valiFormData || {}
     const res = await apis.updateUserInfoApi({phone});
     if(res.code === 1){
-      userStore.updateUserPhone(phone)
+      userStore.updateUserInfo({phone, id})
       $emit('submit',{...res.data})
     }
   }

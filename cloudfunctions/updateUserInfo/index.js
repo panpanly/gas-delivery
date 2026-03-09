@@ -57,7 +57,7 @@ exports.main = async (event, context) => {
       data: {
         openId,
         phone,
-        recordId: result._id // 数据库记录ID
+        id: result._id // 数据库记录ID
       }
     }
   } catch (err) {

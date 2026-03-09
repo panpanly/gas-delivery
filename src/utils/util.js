@@ -4,22 +4,23 @@
  */
 
 /**
- * 统一封装 showToast 提示
- * @param {String} title 提示文本
- * @param {String} icon 图标（success/loading/error/none，默认none）
- * @param {Number} duration 显示时长（默认2000ms）
- * @param {Boolean} mask 是否显示透明蒙层（默认false）
+ * 统一封装 uni.showToast
+ * @param {Object} options - 配置项
+ * @param {string} options.title - 提示文字
+ * @param {string} [options.icon='none'] - 图标（success/loading/none）
+ * @param {number} [options.duration=1500] - 显示时长
  */
-const _showToast = (title, icon = 'none', duration = 2000, mask = false) => {
-  // 先关闭可能存在的提示，避免重复触发
-  uni.hideToast();
-  return uni.showToast({
-    title,
-    icon,
-    duration,
-    mask
-  });
-};
+export const $toast = (options) => {
+  const defaultOptions = {
+    title:'',
+    icon: 'none',
+    duration: 1500,
+    mask: false // 是否显示透明蒙层（防止触摸穿透）
+  }
+  // 合并默认配置和传入配置
+  const finalOptions = { ...defaultOptions, ...options }
+  uni.showToast(finalOptions)
+}
 
 /**
  * 防抖函数（触发后延迟执行，重复触发重置延迟）
@@ -28,7 +29,7 @@ const _showToast = (title, icon = 'none', duration = 2000, mask = false) => {
  * @param {Boolean} immediate 是否立即执行（默认false）
  * @returns {Function} 防抖后的函数
  */
-const _debounce = (fn, delay = 500, immediate = false) => {
+export const _debounce = (fn, delay = 500, immediate = false) => {
   let timer = null;
   return function (...args) {
     // 清除之前的定时器
@@ -55,7 +56,7 @@ const _debounce = (fn, delay = 500, immediate = false) => {
  * @param {Number} interval 间隔时间（ms，默认500ms）
  * @returns {Function} 节流后的函数
  */
-const _throttle = (fn, interval = 500) => {
+export const _throttle = (fn, interval = 500) => {
   let lastTime = 0; // 上一次执行时间
   return function (...args) {
     const now = Date.now();
@@ -72,7 +73,7 @@ const _throttle = (fn, interval = 500) => {
  * @param {String} title 加载文本（默认"加载中..."）
  * @param {Boolean} mask 是否显示蒙层（默认true）
  */
-const _showLoading = (title = '加载中...', mask = true) => {
+export const _showLoading = (title = '加载中...', mask = true) => {
   uni.hideLoading();
   return uni.showLoading({ title, mask });
 };
@@ -80,15 +81,6 @@ const _showLoading = (title = '加载中...', mask = true) => {
 /**
  * 扩展：封装 hideLoading 关闭加载提示
  */
-const _hideLoading = () => {
+export const _hideLoading = () => {
   uni.hideLoading();
-};
-
-// 导出所有工具方法（统一入口）
-export {
-  _showToast,
-  _debounce,
-  _throttle,
-  _showLoading,
-  _hideLoading
 };
