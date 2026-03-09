@@ -11,6 +11,17 @@ const addApplyRecord = (data) =>{
   })
 }
 
+/**
+ * 获取申请记录
+ */
+const fetchApplyList = (data) =>{
+  return callCloudFunction({
+    name:'getApplyList',
+    data,
+  })
+}
+
 export default {
-  addApplyRecord
+  addApplyRecord,
+  fetchApplyList
 }

@@ -59,7 +59,7 @@
 
   //查看历史的申请记录
   const onApplyRecoed = () =>{
-    toPath = '/pages/mine/index'
+    toPath = '/pages/applyList/index'
     //校验用户是否填写了手机号
     if(!userPhone) {
       instance.refs.phonePopupRef.open('center')

@@ -10,7 +10,7 @@
 			"path": "pages/index/index"
 		},
     {
-			"path": "pages/mine/index"
+			"path": "pages/applyList/index"
 		},
     {
 			"path": "pages/deliveryApply/index"

@@ -14,6 +14,8 @@ exports.main = async (event, context) => {
         userPhone,
         userId, 
         fileIds,
+        status:'1',
+        statusName:'待处理',
         createTime: db.serverDate(), // 服务器创建时间
         updateTime: db.serverDate() // 服务器更新时间
       }

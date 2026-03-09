@@ -3,16 +3,16 @@
     <!-- 月份筛选 -->
     <view class="date-filter-body">
       <view class="filter-title">筛选月份：</view>
-      <picker class="filter-picker" mode="date" value="{{date}}" fields="month" @change="bindDateChange">
+      <picker class="filter-picker" mode="date" :value="state.filterDate" fields="month" @change="changeDate">
         <view class="picker">
-          {{date}}
+          {{state.filterDate}}
         </view>
       </picker>
     </view>
     <!-- 申请内容 -->
-    <view class="content" v-if="recordList.length">
+    <view class="content" v-if="state.list.length">
       <view class="record-item" 
-        v-for="(pItem, pIndex) in recordList" 
+        v-for="(pItem, pIndex) in state.list" 
         :key="pIndex">
         <view class="base-info">
           <view class="time-box">
@@ -41,44 +41,52 @@
   </view>
 </template>
 
-<script>
-export default {
-  data() {
-    return {
-      date:'',
-      voiceList:[
-        {},{}
-      ],
-      recordList:[
-        {},{}
-      ],
-    }
-  },
-  onLoad() {
-    /** 初始化当月时间 */
-    this.initDate()
-  },
-  methods: {
-    
-    /**
-     * 获取当前月份信息
-     */
-    initDate(){
-      const nowDate = new Date()
-      const year = nowDate.getFullYear();
-      const maoth = nowDate.getMonth() + 1 ;
-      const currentDate = `${year}-${maoth}`
-      this.date = currentDate
-      
-    },
+<script setup>
+import {onMounted, reactive} from 'vue'
+import apis from '@/apis/index.js'
+import { useUserStore } from '@/stores/user/index.js'
 
-    /** 月份筛选 */
-    bindDateChange(event){
-      const value = event?.detail?.value || ''
-      this.date = value
+  const userStore = useUserStore();
+  const userId = userStore.userId
+
+  const state = reactive({
+    filterDate:'', //筛选时间
+    list:[], //列表数据
+  })
+
+  //初始化当前时间
+  const initDate = () =>{
+    const nowDate = new Date()
+    const year = nowDate.getFullYear();
+    const maoth = nowDate.getMonth() + 1 ;
+    const currentDate = `${year}-${maoth}`
+    state.filterDate = currentDate
+  }
+
+  /** 获取申请记录列表 */
+  const getList = async () =>{
+    const res = await apis.fetchApplyList({
+      date:state.filterDate,
+      userId:userId
+    })
+    if(res.code === 1){
+      state.list = res.data || []
     }
-  },
-}
+  }
+
+  /** 选择时间 */
+  const changeDate = (event) =>{
+    const value = event?.detail?.value || ''
+    state.filterDate = value
+  }
+
+  onMounted(() =>{
+    //初始化筛选日期
+    initDate();
+    //根据筛选日期获取列表数据
+    getList()
+  })
+
 </script>
 
 <style lang="scss" scoped>
@@ -102,7 +110,7 @@ export default {
     }
     .filter-picker{
       border: 2rpx solid #000;
-      width: 300rpx;
+      width: 210rpx;
       height: 80rpx;
       padding: 0rpx 40rpx;
       border-radius: 80rpx;
