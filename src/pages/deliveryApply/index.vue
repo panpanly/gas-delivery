@@ -12,7 +12,6 @@
         </view>
         <view class="voice-box" @tap="playVoice(item.path)">
           <icon class="iconfont icon-yuyin"></icon>
-          <view class="voice-name">录音_{{index+1}}.mp3</view>
         </view>
       </view>
     </view>
@@ -224,7 +223,7 @@ import {navigateBack} from '@/utils/navigate.js'
     //3 提交请求
     const res = await apis.addApplyRecord(params);
     if(res.code === 1){
-      $toast('新增成功！')
+      $toast({title:'新增成功'})
       const timer = setTimeout(() =>{
         clearTimeout(timer)
         navigateBack()
@@ -294,7 +293,7 @@ import {navigateBack} from '@/utils/navigate.js'
       left: 40%;
       top: 40%;
       font-size: 40rpx;
-      color: $uni-color-success;
+      color: $uni-color-error;
       width: 200rpx;
       text-align: center;
     }

@@ -20,7 +20,7 @@ const fileConverter = async (list = []) =>{
       fileList: fileList
     })
     list.forEach((fItem,fIndex) =>{
-      const fileInfo = fileInfoArr[fIndex]
+      const fileInfo = fileInfoArr?.fileList[fIndex]
       finalFileList.push({
         userId:fItem.userId,
         fileUrl:fileInfo.tempFileURL,
@@ -29,7 +29,7 @@ const fileConverter = async (list = []) =>{
     })
     return finalFileList
   } catch (error) {
-    console.warn(`读取文件失败`, fileError)
+    console.warn(`读取文件失败`, error)
     return []
   }
 }
@@ -86,24 +86,14 @@ exports.main = async (event, context) => {
     // 结束时间：当月最后1日 23:59:59
     const endDate = new Date(year, month, 0, 23, 59, 59)
 
-    // 4. 转换为微信云数据库的时间格式（兼容Date对象/时间戳）
-    const startTime = db.serverDate({
-      date: startDate.getTime()
-    })
-    const endTime = db.serverDate({
-      date: endDate.getTime()
-    })
-
-    // 5. 筛选数据（替换为你的集合名，如：order、user_data）
+    // 5. 筛选数据
     const result = await db.collection('apply_list')
       .where({
-        // createTime 是你的数据创建时间字段，需替换为实际字段名
-        createTime: _.and(
-          _.gte(startTime), // 大于等于开始时间
-          _.lte(endTime)    // 小于等于结束时间
-        )
-      }).where({
-        userId:userId
+        userId: userId,
+        createTime: {
+          $gte: startDate,
+          $lte: endDate
+        }
       })
       .orderBy('createTime', 'desc') // 按创建时间倒序
       .get()

@@ -16,28 +16,30 @@
         :key="pIndex">
         <view class="base-info">
           <view class="time-box">
-            <view class="apply-time">申请时间：2026-03-01 13:00:00</view>
-            <view class="completion-time">完成时间：2026-03-01 16:00:00</view>
+            <view class="apply-time">创建时间：{{pItem.createTimeStr}}</view>
+            <view class="completion-time">更新时间：{{pItem.updateTimeStr}}</view>
           </view>
-          <view class="status-box">处理中</view>
         </view>
         <view class="voice-list">
           <view class="voice-item" 
-            v-for="(sItem, sIndex) in voiceList" 
+            v-for="(sItem, sIndex) in pItem.fileInfoList" 
             :key="sIndex"
           >
             <view class="user-item">
               <image class="icon-user" src="/static/images/icon-men.png" />
             </view>
-            <view class="voice-box" @tap="playVoice(item.path)">
+            <view class="voice-box" @tap="playVoice(sItem.fileUrl)">
               <icon class="iconfont icon-yuyin"></icon>
-              <view class="voice-name">录音_{{sIndex+1}}.mp3</view>
             </view>
           </view>
         </view>
+        <view class="status-body">
+          <view class="status-left flex-row-center">处理中</view>
+          <view class="status-right flex-row-center">点击查看更多 {{'>>'}}</view>
+        </view>
       </view>
     </view>
-    <view class="empty-box" v-else>暂无数据</view>
+    <view class="empty-box" v-else-if="state.loadFinished">暂无数据</view>
   </view>
 </template>
 
@@ -45,6 +47,7 @@
 import {onMounted, reactive} from 'vue'
 import apis from '@/apis/index.js'
 import { useUserStore } from '@/stores/user/index.js'
+import { formatTime } from '@/utils/timeUtil.js'
 
   const userStore = useUserStore();
   const userId = userStore.userId
@@ -52,25 +55,36 @@ import { useUserStore } from '@/stores/user/index.js'
   const state = reactive({
     filterDate:'', //筛选时间
     list:[], //列表数据
+    loadFinished:false,
   })
 
   //初始化当前时间
   const initDate = () =>{
-    const nowDate = new Date()
-    const year = nowDate.getFullYear();
-    const maoth = nowDate.getMonth() + 1 ;
-    const currentDate = `${year}-${maoth}`
-    state.filterDate = currentDate
+    state.filterDate = formatTime(new Date,'YYYY-MM')
+  }
+
+  /** 列表数据处理 */
+  const dataListConverter = (list = []) =>{
+    if(!list.length) return []
+    list.forEach(item =>{
+      item.createTimeStr = formatTime(item.createTime,'YYYY-MM-DD HH:mm')
+      item.updateTimeStr = formatTime(item.updateTime,'YYYY-MM-DD HH:mm')
+    })
+    return list
   }
 
   /** 获取申请记录列表 */
   const getList = async () =>{
+    state.loadFinished = false
     const res = await apis.fetchApplyList({
       date:state.filterDate,
       userId:userId
     })
+    state.loadFinished = true
     if(res.code === 1){
-      state.list = res.data || []
+      state.list = dataListConverter(res?.data)
+      console.error('====>>>>>>list',state.list);
+      
     }
   }
 
@@ -78,6 +92,25 @@ import { useUserStore } from '@/stores/user/index.js'
   const changeDate = (event) =>{
     const value = event?.detail?.value || ''
     state.filterDate = value
+    getList()
+  }
+
+  // 播放已保存的语音
+  const playVoice = (path) =>{
+    const innerAudioContext = uni.createInnerAudioContext();
+    innerAudioContext.src = path;
+    innerAudioContext.play();
+    
+    // 播放结束销毁实例
+    innerAudioContext.onEnded(() => {
+      innerAudioContext.destroy();
+    });
+    
+    // 播放错误处理
+    innerAudioContext.onError((err) => {
+      state.tipText = `播放失败：${err.errMsg}`;
+      innerAudioContext.destroy();
+    });
   }
 
   onMounted(() =>{
@@ -123,7 +156,6 @@ import { useUserStore } from '@/stores/user/index.js'
     margin: 200rpx 24rpx 20rpx 24rpx;
     .record-item{
       background: #fff;
-      border-radius: 10rpx;
       padding: 20rpx;
       margin-bottom: 20rpx;
     }
@@ -131,10 +163,11 @@ import { useUserStore } from '@/stores/user/index.js'
       display: flex;
       justify-content: space-between;
       padding: 20rpx 0rpx;
-      border-bottom: 2rpx solid #c0c0c0;
+      border-bottom: 2rpx solid #ccc;
       .time-box{
-        font-size: 32rpx;
-        color: #000;
+        font-size: 36rpx;
+        line-height: 60rpx;
+        color: #666;
       }
       .status-box{
         font-size: 40rpx;
@@ -144,8 +177,7 @@ import { useUserStore } from '@/stores/user/index.js'
       }
     }
     .voice-list{
-      margin-top: 20rpx;
-      padding-bottom: 20rpx;
+      margin: 20rpx 0rpx;
       .voice-item{
         display: flex;
         margin-bottom: 20rpx;
@@ -179,29 +211,30 @@ import { useUserStore } from '@/stores/user/index.js'
           margin-left: 10rpx;
         }
       }
-      // .voice-item{
-      //   width: 300rpx;
-      //   height: 60rpx;
-      //   background: #4cd964;
-      //   font-size: 36rpx;
-      //   display: flex;
-      //   justify-items: center;
-      //   align-items: center;
-      //   margin-bottom: 20rpx;
-      //   .icon-yuyin{
-      //     color: #fff;
-      //     font-size: 40rpx;
-      //   }
-      //   .voice-name{
-      //     color: #fff;
-      //     margin-left: 10rpx;
-      //   }
-      // }
+    }
+
+    .status-body{
+      padding: 30rpx 24rpx;
+      border-top: 2rpx solid #ccc;
+      display: flex;
+      justify-content: space-between;
+      .status-left{
+        display: flex;
+        font-size: 36rpx;
+        color: #4cd964;
+      }
+      .status-right{
+        border-radius: 20rpx;
+        font-size: 30rpx;
+        border: 2rpx solid #666;
+        width: 300rpx;
+        height: 80rpx;
+      }
     }
   }
   .empty-box{
     font-size: 36rpx;
-    color: #000;
+    color: #bbb;
     padding: 300rpx 100rpx 0rpx;
     flex: 1;
     text-align: center;
