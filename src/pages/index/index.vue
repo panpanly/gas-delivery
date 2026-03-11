@@ -6,7 +6,7 @@
       mode="scaleToFill"
     />
     <view class="handle-body">
-      <view class="handle-btn handle-delivery" @tap="onDelevery">煤气配送</view>
+      <view class="handle-btn handle-delivery" @tap="onDelevery">送煤气</view>
       <view class="handle-btn handle-record" @tap="onApplyRecoed">申请记录</view>
     </view>
     <!-- 手机输入弹窗 -->
