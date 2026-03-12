@@ -93,7 +93,7 @@ const navigate = (instance, type, url, params = {}, isWebview = false) => {
  * @param {Object} params 参数
  * @param {Boolean} isWebview 是否跳转到webview
  */
-export const navigateTo = (instance, url, params = {}, isWebview = false) => {
+export const $navigateTo = (instance, url, params = {}, isWebview = false) => {
   navigate(instance, 'navigateTo', url, params, isWebview)
 }
 
@@ -104,7 +104,7 @@ export const navigateTo = (instance, url, params = {}, isWebview = false) => {
  * @param {Object} params 参数
  * @param {Boolean} isWebview 是否跳转到webview
  */
-export const redirectTo = (instance, url, params = {}, isWebview = false) => {
+export const $redirectTo = (instance, url, params = {}, isWebview = false) => {
   navigate(instance, 'redirectTo', url, params, isWebview)
 }
 
@@ -114,7 +114,7 @@ export const redirectTo = (instance, url, params = {}, isWebview = false) => {
  * @param {String} url 目标路径
  * @param {Object} params 参数
  */
-export const switchTab = (instance, url, params = {}) => {
+export const $switchTab = (instance, url, params = {}) => {
   navigate(instance, 'switchTab', url, params)
 }
 
@@ -125,14 +125,14 @@ export const switchTab = (instance, url, params = {}) => {
  * @param {Object} params 参数
  * @param {Boolean} isWebview 是否跳转到webview
  */
-export const reLaunch = (instance, url, params = {}, isWebview = false) => {
+export const $reLaunch = (instance, url, params = {}, isWebview = false) => {
   navigate(instance, 'reLaunch', url, params, isWebview)
 }
 
 /**
  * 页面返回（兼容webview）
  */
-export const navigateBack = (delta = 1) => {
+export const $navigateBack = (delta = 1) => {
   try {
     // 直接用小程序原生 API 获取页面栈，无需依赖组件实例
     const pageStack = getCurrentPages()
@@ -170,10 +170,10 @@ export const toWebview = (instance, webUrl, params = {}) => {
 
 // 导出所有方法
 export default {
-  navigateTo,
-  redirectTo,
-  switchTab,
-  reLaunch,
-  navigateBack,
+  $navigateTo,
+  $redirectTo,
+  $switchTab,
+  $reLaunch,
+  $navigateBack,
   toWebview
 }

@@ -36,7 +36,7 @@ import apis from '@/apis/index.js'
 import {useUserStore} from '@/stores/user/index.js'
 import { getCurrentInstance, onMounted, reactive } from 'vue';
 import {$toast} from '@/utils/util.js'
-import {navigateBack} from '@/utils/navigate.js'
+import {$navigateBack} from '@/utils/navigate.js'
 
   //当前实例
   const instance = getCurrentInstance()
@@ -226,7 +226,7 @@ import {navigateBack} from '@/utils/navigate.js'
       $toast({title:'新增成功'})
       const timer = setTimeout(() =>{
         clearTimeout(timer)
-        navigateBack()
+        $navigateBack()
       },2000)
     }
   }

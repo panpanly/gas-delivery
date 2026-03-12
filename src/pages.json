@@ -17,6 +17,9 @@
 		},
     {
 			"path": "pages/deliveryLogin/index"
+		},
+    {
+			"path": "pages/deliveryHome/index"
 		}
 	],
 	"globalStyle": {

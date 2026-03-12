@@ -25,6 +25,7 @@
 <script setup>
   import {getCloudFileUrl} from '@/utils/cloud.js'
   import {ref, onMounted, reactive, getCurrentInstance} from 'vue'
+  import {$redirectTo} from '@/utils/navigate.js'
 
   const instance = getCurrentInstance()
   const imageUrl = ref('');
@@ -66,7 +67,9 @@
   const handleLogin = () =>{
     instance.refs.formRef.validate().then(valid =>{
       if(valid){
-
+        //TODO: 调用登录接口
+        //TODO:登录成功之后跳转配送端页面
+        $redirectTo(instance,'/pages/deliveryHome/index')
       }
     })
   }
