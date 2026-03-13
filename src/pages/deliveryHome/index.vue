@@ -33,7 +33,7 @@
     <view class="utils-box">
       <view class="utils-title">我的工具</view>
       <view class="utils-content">
-        <view class="util-item" v-for="(item,index) in utilsList" :key="index">
+        <view class="util-item" v-for="(item,index) in utilsList" :key="index" @tap="handleClickUtil(item)">
           <image class="util-item-icon" :src="item.icon" />
           <view class="util-item-title">{{item.title}}</view>
         </view>
@@ -45,12 +45,14 @@
 <script setup>
   import {getCloudFileUrl} from '@/utils/cloud.js'
   import {onMounted, reactive, ref, getCurrentInstance} from 'vue'
+  import {$navigateTo} from '@/utils/navigate.js'
 
   const utilsList = [
     {
       icon:'../../static/images/icon-fabu.png',
-      title:'发布气价',
-      type:'launch',
+      title:'新增商品',
+      type:'addProduct',
+      path:'/pages/addproduct/index',
     },
     {
       icon:'../../static/images/icon-shangpin.png',
@@ -75,6 +77,18 @@
   const state= reactive({
     utilsList
   })
+
+  /** 选择工具 */
+  const handleClickUtil = (item) =>{
+    switch (item.type) {
+      case 'addProduct':
+        $navigateTo(instance,item.path)
+        break;
+    
+      default:
+        break;
+    }
+  }
 
   onMounted(() =>{
 
@@ -148,7 +162,7 @@
         color: rgba(0,0,0,0.9);
         line-height: 44rpx;
       }
-      .utils-content{
+      .utils-content{ 
         padding: 40rpx;
         display: flex;
         flex-wrap: wrap;

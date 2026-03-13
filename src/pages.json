@@ -20,7 +20,10 @@
 		},
     {
 			"path": "pages/deliveryHome/index"
-		}
+		},
+    {
+      "path": "pages/addproduct/index"
+    }
 	],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
